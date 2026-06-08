@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>アプリ紹介メーカー</title>
+  
+  <style>
+    /* デザイン指定に基づくカラーパレットとモダンな変数定義 */
+    :root {
+      --color-primary: #223670;     /* ネイビー */
+      --color-primary-light: #3a539b; /* 明るめのネイビー */
+      --color-accent: #D0A900;      /* ゴールド */
+      --color-accent-hover: #e6bc00;/* ホバー用ゴールド */
+      --color-bg: #f8fafc;          /* 柔らかいブルーグレー背景 */
+      --color-text: #334155;        /* 濃いグレー（テキスト用） */
+      --color-text-muted: #64748b;  /* 薄いグレー（サブテキスト用） */
+      --color-border: #e2e8f0;      /* 枠線 */
+      --color-card-bg: #ffffff;     /* カード背景 */
+      --shadow-sm: 0 1px 2px 0 rgba(34, 54, 112, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(34, 54, 112, 0.1), 0 2px 4px -1px rgba(34, 54, 112, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(34, 54, 112, 0.1), 0 4px 6px -2px rgba(34, 54, 112, 0.05);
+      --radius-md: 8px;
+      --radius-lg: 12px;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* スマホ対応・中央寄せレイアウト */
+    .container {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 40px 16px;
+    }
+
+    .header-section {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    h1 {
+      color: var(--color-primary);
+      font-size: 1.75rem;
+      font-weight: 800;
+      margin: 0 0 8px 0;
+      letter-spacing: -0.025em;
+    }
+
+    .subtitle {
+      color: var(--color-text-muted);
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    .input-section {
+      background-color: var(--color-card-bg);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      box-shadow: var(--shadow-md);
+      margin-bottom: 40px;
+      border: 1px solid rgba(226, 232, 240, 0.8);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--color-primary);
+      font-size: 0.95rem;
+    }
+
+    input[type="text"],
+    input[type="url"] {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      box-sizing: border-box;
+      font-size: 1rem;
+      background-color: #fcfcfd;
+      transition: all 0.2s ease;
+    }
+
+    input[type="text"]::placeholder,
+    input[type="url"]::placeholder {
+      color: #94a3b8;
+    }
+
+    input[type="text"]:focus,
+    input[type="url"]:focus {
+      outline: none;
+      border-color: var(--color-primary-light);
+      background-color: #ffffff;
+      box-shadow: 0 0 0 3px rgba(58, 83, 155, 0.15);
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--color-accent) 0%, #e6c840 100%);
+      color: var(--color-primary);
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: 12px;
+      box-shadow: 0 4px 12px rgba(208, 169, 0, 0.3);
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(208, 169, 0, 0.4);
+      background: linear-gradient(135deg, var(--color-accent-hover) 0%, #edd155 100%);
+    }
+
+    .btn-submit:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 8px rgba(208, 169, 0, 0.3);
+    }
+
+    #outputSection {
+      display: none; /* 初期状態は非表示 */
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .card {
+      background-color: var(--color-card-bg);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--color-border);
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 20px;
+      background-color: rgba(248, 250, 252, 0.8);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .card-title {
+      margin: 0;
+      font-size: 0.95rem;
+      color: var(--color-primary);
+      font-weight: 700;
+    }
+
+    .btn-copy {
+      background-color: var(--color-bg);
+      color: var(--color-primary);
+      border: 1px solid var(--color-border);
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-copy::before {
+      /* 簡単なコピーアイコン（CSS） */
+      content: '';
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border: 1.5px solid currentColor;
+      border-radius: 2px;
+      position: relative;
+      top: -1px;
+    }
+
+    .btn-copy:hover {
+      background-color: var(--color-primary);
+      color: #ffffff;
+      border-color: var(--color-primary);
+    }
+
+    /* コピー成功時のスタイル */
+    .btn-copy.copied {
+      background-color: var(--color-accent);
+      color: var(--color-primary);
+      border-color: var(--color-accent);
+    }
+    
+    .btn-copy.copied::before {
+      /* チェックマークに変更（疑似要素のボーダー操作） */
+      width: 5px;
+      height: 9px;
+      border: solid currentColor;
+      border-width: 0 2px 2px 0;
+      border-radius: 0;
+      transform: rotate(45deg);
+      top: -2px;
+      margin-right: 4px;
+    }
+
+    .card-body {
+      padding: 20px;
+      font-size: 0.95rem;
+      color: var(--color-text);
+      white-space: pre-wrap; /* 改行をそのまま表示 */
+      word-break: break-all;
+      line-height: 1.7;
+    }
+
+    /* 生成時のアニメーション */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in {
+      animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      opacity: 0; /* 初期状態は透明 */
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header-section">
+    <h1>アプリ紹介メーカー</h1>
+    <p class="subtitle">情報を入力するだけで、必要なテキストやプロンプトを自動生成します</p>
+  </div>
+
+  <!-- 入力エリア -->
+  <div class="input-section">
+    <form id="generatorForm">
+      <div class="form-group">
+        <label for="appName">アプリ名</label>
+        <input type="text" id="appName" placeholder="例：タスク管理AIくん" required>
+      </div>
+      <div class="form-group">
+        <label for="appUrl">URL</label>
+        <input type="url" id="appUrl" placeholder="例：https://example.com" required>
+      </div>
+      <button type="submit" class="btn-submit">生成する</button>
+    </form>
+  </div>
+
+  <!-- 出力エリア -->
+  <div id="outputSection">
+    <!-- JavaScriptでここにカードが生成されます -->
+  </div>
+</div>
+
+<script>
+  // 指定文字数でカットし、末尾に「…」を追加するヘルパー関数
+  function truncateText(text, maxLength) {
+    if (text.length > maxLength) {
+      return text.substring(0, maxLength - 1) + '…';
+    }
+    return text;
+  }
+
+  // テキストをクリップボードにコピーする関数 (iframe制約回避のためexecCommandを使用)
+  function copyToClipboard(buttonElement) {
+    const textToCopy = buttonElement.getAttribute('data-text');
+    
+    // 一時的なtextarea要素を作成
+    const textarea = document.createElement('textarea');
+    textarea.value = textToCopy;
+    
+    // 画面外に配置
+    textarea.style.position = 'fixed';
+    textarea.style.left = '-9999px';
+    textarea.style.top = '-9999px';
+    document.body.appendChild(textarea);
+    
+    textarea.select();
+    textarea.setSelectionRange(0, 99999); // モバイル向け対応
+    
+    try {
+      document.execCommand('copy');
+      
+      // UIのフィードバック更新
+      const originalText = buttonElement.textContent;
+      buttonElement.textContent = 'コピーしました！';
+      buttonElement.classList.add('copied');
+      
+      // 2秒後に元の状態に戻す
+      setTimeout(() => {
+        buttonElement.textContent = originalText;
+        buttonElement.classList.remove('copied');
+      }, 2000);
+      
+    } catch (err) {
+      console.error('コピーに失敗しました', err);
+    } finally {
+      // 一時要素を削除
+      document.body.removeChild(textarea);
+    }
+  }
+
+  // フォーム送信時の処理
+  document.getElementById('generatorForm').addEventListener('submit', function(e) {
+    e.preventDefault(); // ページリロードを防止
+
+    // 入力値の取得
+    const appName = document.getElementById('appName').value.trim();
+    const appUrl = document.getElementById('appUrl').value.trim();
+    
+    // ファビコン用の先頭2文字取得
+    const appNamePrefix = appName.substring(0, 2);
+
+    // 出力データ定義
+    const generatedData = [
+      {
+        title: "ターゲット",
+        content: `${appName}を必要としている中小企業の経営者・担当者。日々の業務で${appName}に関する悩みを抱えており、手軽にデジタルで解決したいと考えている方。`
+      },
+      {
+        title: "アプリ概要（60文字以内）",
+        content: truncateText(`${appName}は、中小企業の課題をAIで素早く解決する無料Webアプリです。URLは${appUrl}`, 60)
+      },
+      {
+        title: "アプリ概要（170文字以内）",
+        content: truncateText(`${appName}は、忙しい中小企業の経営者・担当者のために作られた無料Webアプリです。難しい操作は不要で、入力するだけで必要な情報をすぐに得られます。デジタル化・AI活用を手軽にはじめたい方にぴったりのツールです。詳しくは${appUrl}をご覧ください。`, 170)
+      },
+      {
+        title: "解決できる悩み・提供できる価値",
+        content: `・${appName}に関する作業に時間がかかっていた悩みを解消します\n・専門知識がなくても、入力するだけで結果が得られます\n・無料・登録不要ですぐ使えるので、導入ハードルがありません`
+      },
+      {
+        title: "Midjourneyプロンプト：favicon用（日本語）",
+        content: `シンプルでモダンなアイコン、「${appNamePrefix}」のイメージ、ネイビーとゴールドの配色、フラットデザイン、正方形、白背景、ミニマル --ar 1:1 --v 6`
+      },
+      {
+        title: "Midjourneyプロンプト：favicon用（英語）",
+        content: `simple modern icon, image of "${appNamePrefix}", navy and gold color scheme, flat design, square format, white background, minimal, clean --ar 1:1 --v 6`
+      },
+      {
+        title: "Midjourneyプロンプト：OGP用（日本語）",
+        content: `横長バナー画像、「${appName}」のサービスイメージ、中小企業支援・デジタル化をテーマにしたビジネスシーン、ネイビーとゴールドの配色、プロフェッショナルで信頼感のあるデザイン、テキストなし --ar 1200:630 --v 6`
+      },
+      {
+        title: "Midjourneyプロンプト：OGP用（英語）",
+        content: `wide banner image, service image of "${appName}", business scene themed around SME support and digitalization, navy and gold color scheme, professional and trustworthy design, no text --ar 1200:630 --v 6`
+      }
+    ];
+
+    // HTMLエスケープ処理関数 (XSS対策)
+    const escapeHTML = (str) => {
+      return str.replace(/[&<>'"]/g, match => {
+        return {
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          "'": '&#39;',
+          '"': '&quot;'
+        }[match];
+      });
+    };
+
+    // 出力エリアの構築
+    const outputSection = document.getElementById('outputSection');
+    outputSection.innerHTML = ''; // 既存の内容をクリア
+
+    generatedData.forEach((item, index) => {
+      // 安全な文字列に変換
+      const safeContent = escapeHTML(item.content);
+      const safeTitle = escapeHTML(item.title);
+
+      // カード要素の作成
+      const card = document.createElement('div');
+      // fade-inクラスと、インデックスに基づく遅延（パラパラと表示させる）を追加
+      card.className = 'card fade-in';
+      card.style.animationDelay = `${index * 0.08}s`;
+      
+      // コピー用に元データを属性として保持（HTML内で改行などが崩れないように）
+      card.innerHTML = `
+        <div class="card-header">
+          <h3 class="card-title">${safeTitle}</h3>
+          <button type="button" class="btn-copy" onclick="copyToClipboard(this)">コピー</button>
+        </div>
+        <div class="card-body">${safeContent}</div>
+      `;
+      
+      // データ属性にテキストを付与
+      card.querySelector('.btn-copy').setAttribute('data-text', item.content);
+      
+      outputSection.appendChild(card);
+    });
+
+    // 生成後に表示領域を可視化
+    outputSection.style.display = 'flex';
+  });
+</script>
+
+</body>
+</html>
